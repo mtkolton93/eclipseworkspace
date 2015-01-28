@@ -1,0 +1,52 @@
+package dictionary;
+
+import java.util.ArrayList;
+
+public class Dictionary<K, V> implements IDictionary<K, V>
+{
+	ArrayList<V>[] map = ArrayList<V> [10];
+	
+	@Override
+	public boolean insert(K key, V value)
+	{
+		int hash = value.hashCode()%10;
+		Item<K, V> item = new Item<K, V>(key, value);
+		
+		if(search(key) == null)
+		{
+			map[hash].add(item.key, item);
+			return false;
+		}
+		else
+		{
+			delete(key);
+			return true;
+		}
+	}
+
+	@Override
+	public V search(K key)
+	{
+		
+		return null;
+	}
+
+	@Override
+	public boolean delete(K key)
+	{
+		
+		return false;
+	}
+	
+	private class Item<K, V>
+	{
+		K key;
+		V value;
+		
+		public Item(K k, V v)
+		{
+			key = k;
+			value = v;
+		}
+	}
+}

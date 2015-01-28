@@ -1,0 +1,61 @@
+Project Checklist
+
+Player
+[x] Sprite
+[x] Moves
+[x] Shoots
+
+Basic Enemy
+[x] Sprite
+[x] Spawns
+[x] Moves
+[x] Shoots
+[] Destruction animation
+
+Shots (basic)
+[x] Sprite
+[x] Listening
+[x] Inflicts damage/destroys
+
+GUI
+[x] Title
+[x] Score
+[x] Lives remaining
+   [] Life icons
+[x] Enemies remaining
+[x] Health
+   [] Health Bar
+[x] Current Weapon
+
+Enemy Diversity
+[x] Different enemy sprites
+[x] Different enemy shots
+[x] Different enemy speeds
+[x] Different enemy health
+
+Power Ups
+[x] Sprites
+[x] Weapons: affect player weapon sprites/behaviors
+	[x] Laser beam
+	[x] Double auto
+	[x] Missile
+	[] Spread shot?
+[x] Health (easy: max health)
+[] Shield? (might be tough: have to draw around player)
+	-->Use powerup manager to activate it?
+	
+Levels
+[x] Implement level system based on enemies
+
+Bosses
+[x] Sprites (larger versions of enemies: easy)
+[x] Spawn at end of level
+[x] Stop add spawning
+[] Fix bug where green boss shoots the wrong shot (probably easy)
+
+Sound Effects
+[] Shot fires
+    [] Different sounds for each shot
+[] Shot hits
+[] Enemy destroyed
+[] Background music

@@ -1,0 +1,44 @@
+package topSpin;
+
+import javax.swing.JPanel;
+import javax.swing.JFrame;
+import java.awt.Graphics;
+import java.awt.Color;
+import java.awt.event.MouseListener;
+import java.awt.event.MouseEvent;
+
+public class TopSpin extends JPanel implements MouseListener
+{
+	public static void main(String[] args)
+	{
+		JFrame frame = new JFrame();
+		frame.setSize(816, 638);
+		frame.add(new TopSpin());
+		frame.setVisible(true);
+	}
+	
+	public TopSpin()
+	{
+		addMouseListener(this);
+		setFocusable(true);
+	}
+	
+	public void paintComponent(Graphics g)
+	{
+		g.setColor(Color.gray);
+		g.fillRect(0, 0, 800, 600);
+		g.setColor(Color.lightGray);
+		g.fillArc(100, 100, 100, 100, 90, 180);
+	}
+
+	@Override
+	public void mouseClicked(MouseEvent e){}
+	@Override
+	public void mouseEntered(MouseEvent e){}
+	@Override
+	public void mouseExited(MouseEvent e){}
+	@Override
+	public void mousePressed(MouseEvent e){}
+	@Override
+	public void mouseReleased(MouseEvent e){}
+}

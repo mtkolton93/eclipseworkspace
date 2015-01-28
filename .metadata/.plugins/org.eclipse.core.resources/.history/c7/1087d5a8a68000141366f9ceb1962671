@@ -1,0 +1,84 @@
+package shooter;
+
+import javax.swing.ImageIcon;
+import javax.swing.Timer;
+
+public class Boss extends Enemy
+{
+	protected ImageIcon[] sprites = {
+			new ImageIcon("images/bossSprite0.png"), 
+			new ImageIcon("images/bossSprite1.png"), 
+			new ImageIcon("images/bossSprite2.png")};
+	
+	public Boss(SpaceShooter s)
+	{
+		shooter = s;
+		health = 100;
+		speed = 10;
+		scoreValue = 1000;
+		width = 150;
+		height = 101;
+		x = 500;
+		y = -100;
+		shot = new Shot(shooter, true);
+		active = false;
+		destroyed = false;
+		autoFire = new Timer(10, this);
+		autoFire.start();
+		setType();
+		sprite = new ImageIcon("images/bossSprite0.png");
+	}
+	
+	
+	
+	@Override
+	public void setType()
+	{
+		int type = RNGesus.nextInt(100);
+		if(type < 50)
+		{
+			sprite = sprites[0];
+			shot.setType(0);
+			fireRate = 10;
+		}
+		else if(type < 75)
+		{
+			sprite = sprites[1];
+			shot.setType(1);
+			health = 20;
+			speed = 8;
+			fireRate = 15;
+		}
+		else if(type < 100)
+		{
+			sprite = sprites[2];
+			shot.setType(2);
+			fireRate = 15;
+		}
+	}
+	
+	@Override
+	public void updatePosition()
+	{
+		if(y < 150)
+		{
+			y = y + speed;
+		}
+		else
+		{
+			x = x + speed;
+			if(x > 730)
+			{
+				x = 730;
+			}
+			if(x < 320)
+			{
+				x = 320;
+			}
+			if(RNGesus.nextInt(100) > 95)
+			{
+				speed = -speed;
+			}
+		}
+	}
+}

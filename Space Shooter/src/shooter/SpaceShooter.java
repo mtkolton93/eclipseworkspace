@@ -1,0 +1,315 @@
+package shooter;
+
+import javax.swing.ImageIcon;
+import javax.swing.JPanel;
+import javax.swing.JFrame;
+import java.util.ArrayList;
+import java.util.Random;
+import java.awt.Graphics;
+import java.awt.Color;
+import java.awt.Font;
+import java.awt.event.KeyListener;
+import java.awt.event.KeyEvent;
+import java.awt.event.MouseListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.ActionEvent;
+import javax.swing.Timer;
+
+@SuppressWarnings("serial" )
+public class SpaceShooter extends JPanel implements KeyListener, MouseListener, ActionListener
+{
+	private int score;
+	private int level = 1;
+	private boolean paused = false;
+	private boolean bossDefeated = false;
+	private boolean gameOver = false;
+	Player player = new Player(this);
+	PowerUp powerUp;
+	Timer timer;
+	EnemyManager enemyManager = new EnemyManager(this);
+	PowerUpManager powerUpManager = new PowerUpManager(this);
+	ArrayList<Star> stars = new ArrayList<Star>();
+	ArrayList<Enemy> enemies = new ArrayList<Enemy>();
+	ArrayList<Enemy> activeEnemies = new ArrayList<Enemy>();
+	ImageIcon hud = new ImageIcon("images/hudoverlay.png");
+	ImageIcon gameOverScreen = new ImageIcon("images/gameover.png");
+	ImageIcon[] weapons = {
+			new ImageIcon("images/shot0large.png"), 
+			new ImageIcon("images/shot1large.png"), 
+			new ImageIcon("images/shot2large.png"), 
+			new ImageIcon("images/shot3large.png")};
+	Font info = new Font("lucida bright", Font.BOLD, 16);
+
+	public static void main(String[] args)
+	{
+		SpaceShooter shooter = new SpaceShooter();
+		JFrame frame = new JFrame();
+		frame.add(shooter);
+		frame.setSize(816, 636);
+		frame.setVisible(true);
+	}
+
+	public SpaceShooter()
+	{
+		addKeyListener(this);
+		addKeyListener(player);
+		addMouseListener(this);
+		setFocusable(true);
+		timer = new Timer(50, this);
+		timer.start();
+		generateLevel();
+	}
+
+	public void paintComponent(Graphics g)
+	{
+		if(!gameOver)
+		{
+			if(!paused)
+			{
+				//Background
+				g.setColor(Color.black);
+				g.fillRect(0, 0, 800, 600);
+				
+				//Star Animation
+				for(Star s : stars)
+				{
+					s.paint(g);
+				}
+				
+				//Player and active enemies
+				player.paint(g);
+				for(int i = 0; i < activeEnemies.size(); i++)
+				{
+					activeEnemies.get(i).paint(g);
+				}
+				
+				if(powerUp != null)
+				{
+					powerUp.paint(g);
+				}
+		
+				//HUD
+				g.setColor(Color.lightGray);
+				g.fillRect(0,  0, 250, 600);
+				hud.paintIcon(this, g, 0, 0);
+				weapons[player.getWeapon()].paintIcon(this, g, 70, 440);
+				g.setColor(Color.black);
+				g.setFont(info);
+				g.drawString("" + level, 90, 142);
+				g.drawString("" + enemies.size(), 170, 179);
+				g.drawString("" + score, 90, 256);
+				g.drawString("" + player.getLives(), 89, 297);
+				g.drawString("" + player.getHealth(), 101, 365);
+			}
+			
+			//pause screen
+			else
+			{
+				g.setColor(new Color(0, 0, 0, 10));
+				g.fillRect(0,0, 800, 600);
+				g.setColor(Color.white);
+				g.drawString("PAUSED", 397, 300);
+			}
+		}
+		else
+		{
+			gameOverScreen.paintIcon(this, g, 0, 0);
+			g.setColor(Color.red);
+			g.setFont(info);
+			g.drawString("Score: " + score, 360, 300);
+		}
+	}
+
+	//Adds enemies to the list based on the level (increases by 5 each level)
+	public void generateLevel()
+	{
+		for(int i = 0; i < 15 + (5*level); i++)
+		{
+			enemies.add(new Enemy(this));
+			enemies.get(i).addShotListener(player);
+			enemies.get(i).setType();
+		}
+		bossDefeated = false;
+	}
+	
+	public boolean bossDefeated()
+	{
+		return bossDefeated;
+	}
+	
+	//Adds an enemy from enemies to ActiveEnemies
+	public void spawnEnemy()
+	{
+		//Find first inactive enemy
+		Enemy temp = null;
+		for(Enemy e : enemies)
+		{
+			if(!e.isActive())
+			{
+				temp = e;
+				break;
+			}
+		}
+		
+		if(temp != null)
+		{
+			//Add it to activeEnemies
+			activeEnemies.add(enemies.get(enemies.indexOf(temp)));
+			player.addShotListener(temp);
+			temp.setActive(true);
+		}
+	}
+	
+	//Return an enemy offscreen (this method is here to manipulate the list)
+	public void reset(Enemy e)
+	{
+		activeEnemies.remove(e);
+		enemies.get(enemies.indexOf(e)).reset();
+		player.removeShotListener(e);
+	}
+	
+	//Remove an enemy entirely (this method is here to manipulate the list)
+	public void destroy(Enemy e)
+	{
+		activeEnemies.remove(e);
+		enemies.remove(e);
+		player.removeShotListener(e);
+		score = score + e.getScoreValue();
+		if(e.isBoss())
+		{
+			bossDefeated = true;
+		}
+	}
+	
+	public void spawnBoss()
+	{
+		Boss boss = new Boss(this);
+		player.addShotListener(boss);
+		boss.addShotListener(player);
+		boss.setType();
+		enemies.add(boss);
+		activeEnemies.add(boss);
+		boss.setActive(true);
+	}
+	
+	public void spawnPowerUp()
+	{
+		powerUp = new PowerUp(this, player);
+	}
+	
+	public void gameOver()
+	{
+		gameOver = true;
+	}
+
+	public void keyPressed(KeyEvent e)
+	{
+		if(e.getKeyCode() == KeyEvent.VK_ESCAPE)
+		{
+			paused = !paused;
+		}
+	}
+	public void keyReleased(KeyEvent e){}
+	public void keyTyped(KeyEvent e){}
+
+	public void mousePressed(MouseEvent e){}
+	public void mouseReleased(MouseEvent e){}
+	public void mouseClicked(MouseEvent e){}
+	public void mouseEntered(MouseEvent e){}
+	public void mouseExited(MouseEvent e){}
+
+	public void actionPerformed(ActionEvent e)
+	{
+		if(!paused && !gameOver)
+		{
+			stars.add(new Star());
+			if(stars.size() > 500)
+			{
+				stars.remove(0);
+			}
+		}
+		repaint();
+	}
+	
+	private class EnemyManager implements ActionListener
+	{
+		SpaceShooter shooter;
+		Timer spawnTimer;
+		int timeSinceSpawn;
+		
+		public EnemyManager(SpaceShooter s)
+		{
+			shooter = s;
+			spawnTimer = new Timer(50, this);
+			spawnTimer.start();
+		}
+		
+		@Override
+		public void actionPerformed(ActionEvent e)
+		{
+			if(!paused && !gameOver)
+			{
+				timeSinceSpawn++;
+				
+				if(enemies.size() > 0)
+				{
+					if(timeSinceSpawn > 25)
+					{
+						shooter.spawnEnemy();
+						timeSinceSpawn = 0;
+					}
+				}
+				//Boss time
+				else
+				{
+					if(timeSinceSpawn > 100)
+					{
+						if(!shooter.bossDefeated())
+						{
+							shooter.spawnBoss();
+						}
+						else
+						{
+							level++;
+							shooter.generateLevel();
+						}
+					}
+				}
+			}
+		}
+	}
+	
+	private class PowerUpManager implements ActionListener
+	{
+		SpaceShooter shooter;
+		Timer spawnTimer;
+		Random RNGesus = new Random();
+		int timeSinceSpawn = 0;
+		int spawnRate = 50;
+		
+		public PowerUpManager(SpaceShooter s)
+		{
+			shooter = s;
+			spawnTimer = new Timer(50, this);
+			spawnTimer.start();
+		}
+		
+		public void actionPerformed(ActionEvent e)
+		{
+			if(!PowerUp.isActive())
+			{
+				timeSinceSpawn++;
+				
+				if(timeSinceSpawn > spawnRate)
+				{
+					if(RNGesus.nextInt(100) > 10)
+					{
+						shooter.spawnPowerUp();
+						timeSinceSpawn = 0;
+					}
+				}
+			}
+		}
+	}
+}

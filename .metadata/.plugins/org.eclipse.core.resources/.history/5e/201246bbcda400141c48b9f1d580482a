@@ -1,0 +1,42 @@
+package consoleBlackjack;
+
+public class Card
+{
+	private String name;
+	private String suit;
+	private int value;
+	private int number;
+	
+	public Card(int cardNumber)
+	{
+		number = cardNumber;
+		value = number%13 + 1;
+		
+		if(value == 1)
+		{
+			value = 11;
+			name = "Ace";
+		}
+		else if(value < 11)
+		{
+			name = "" + value;
+		}
+		else if(value == 11)
+		{
+			name = "Jack";
+			value = 10;
+		}
+		else if(value == 12)
+		{
+			name = "Queen";
+			value = 10;
+		}
+		else if(value == 13)
+		{
+			name = "King";
+			value = 10;
+		}
+	}
+	
+	public 
+}

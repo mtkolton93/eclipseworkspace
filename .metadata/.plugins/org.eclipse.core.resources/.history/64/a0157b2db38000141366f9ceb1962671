@@ -1,0 +1,197 @@
+package shooter;
+
+import java.awt.Graphics;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.util.Random;
+import javax.swing.ImageIcon;
+import javax.swing.Timer;
+
+
+public class Enemy extends Ship implements ActionListener
+{
+	protected boolean destroyed;
+	protected boolean active;
+	protected int yVel;
+	protected int yMax;
+	protected int type;
+	protected int scoreValue;
+	protected int burstRate;						//Used for enemy2's burst firing: fire rate of the burst
+	protected int burstFires;						//Number of shots in the burst
+	protected int burstTime; 						//Seperate timeSinceFire for each burst
+	protected Timer autoFire;
+	protected SpaceShooter shooter;
+	protected Shot[] shot = new Shot[1];;
+	private ImageIcon[] sprites = {
+			new ImageIcon("images/enemysprite0.png"), 
+			new ImageIcon("images/enemysprite1.png"), 
+			new ImageIcon("images/enemysprite2.png")};
+	protected ImageIcon sprite;
+	protected Random RNGesus = new Random();
+	
+	public Enemy(SpaceShooter s)
+	{
+		x = RNGesus.nextInt(530) + 250;
+		y = -(height + 5);
+		yVel = 10;
+		width = 70;
+		height = 47;
+		yMax = 600 + height/2;
+		health = 10;
+		scoreValue = 100;
+		shooter = s;
+		shot[0] = new Shot(shooter, true);
+		active = false;
+		destroyed = false;
+		timeSinceFire = 0;
+		setType();
+		autoFire = new Timer(50, this);
+		autoFire.start();
+	}
+	
+	//Used for creating bosses
+	public Enemy() {}
+	
+	public void paint(Graphics g)
+	{
+		if(isActive())
+		{
+			updatePosition();
+			sprite.paintIcon(shooter, g, x-width/2, y-height/2);
+			shot[0].paint(g);
+			
+			if(type == 2)
+			{
+				shot[1].paint(g);
+				shot[2].paint(g);
+			}
+		}
+	}
+	
+	//Set the type of the enemy and set up its stats
+	public void setType()
+	{
+		int t = RNGesus.nextInt(100);
+		
+		//Basic enemy: 50% chance
+		if(t < 50)
+		{
+			type = 0;
+			sprite = sprites[0];
+			shot[0].setType(0);
+			health = 10;
+			speed = 8;
+			fireRate = 10;
+		}
+		//Heavy enemy: 25% chance
+		else if(t < 75)
+		{
+			type = 1;
+			sprite = sprites[1];
+			shot[0].setType(1);
+			health = 20;
+			speed = 6;
+			fireRate = 15;
+		}
+		//Fast enemy: 25% chance
+		else if(t < 100)
+		{
+			type = 2;
+			sprite = sprites[2];
+			
+			//This enemy fires in bursts
+			shot = new Shot[3];
+			for(int i = 0; i < 3; i++)
+			{
+				shot[i] = new Shot(shooter, true);
+				shot[i].setType(2);
+			}
+			
+			health = 10;
+			speed = 10;
+			fireRate = 8;
+			burstRate = 2;
+			burstTime = 0;
+			burstFires = 0;
+		}
+	}
+	
+	//Adds the player as a shot listener
+	public void addShotListener(ShotListener l)
+	{
+		shot[0].addListener(l);
+	}
+	
+	//Called when the enemy gets hit
+	public void hit()
+	{
+		health = health - damageTaken;
+		if(health <= 0)
+		{
+			shooter.destroy(this);
+		}
+	}
+	
+	public void updatePosition()
+	{
+		y = y + yVel;
+		if(y > yMax)
+		{
+			shooter.reset(this);
+		}
+	}
+	
+	//Resets the position
+	public void reset()
+	{
+		setActive(false);
+		x = RNGesus.nextInt(530) + 260;
+		y = -(height + 5);
+		health = 10;
+		timeSinceFire = 0;
+		burstFires = 0;
+		burstTime = 0;
+	}
+	
+	public boolean isActive()
+	{
+		return active;
+	}
+	
+	public void setActive(boolean a)
+	{
+		active = a;
+	}
+	
+	//Different enemies yield different point values
+	public int getScoreValue()
+	{
+		return scoreValue;
+	}
+
+	@Override
+	public void actionPerformed(ActionEvent e)
+	{
+		timeSinceFire++;
+		if(timeSinceFire > fireRate)
+		{
+			burstTime++;
+			if(type != 2)
+			{
+				shot[0].fire(x, y);			
+				timeSinceFire = 0;
+			}
+			else if(burstTime > burstRate && burstFires < 3)
+			{
+				shot[burstFires].fire(x, y);
+				burstFires++;
+				burstTime = 0;
+				if(burstFires == 3)
+				{
+					timeSinceFire = 0;
+					burstFires = 0;
+				}
+			}
+		}
+	}
+}

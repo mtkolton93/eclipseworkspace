@@ -1,0 +1,11 @@
+Bryan Devaux, 50000, 6, 1
+Amanda Trapp, 43000, 2, 2
+Baclan Nguyen, 97000, 4, 3
+Sarah Gilley, 74000, 1, 4
+Warren Rexroad, 69000, 4, 5
+Jorge Gonzales, 60000, 7, 6
+Paula Hung, 32000, 2, 7
+Lou Mason, 29000, 5, 8
+Steve Chu, 46000, 8, 9
+Dave Lightfoot, 73000, 3, 10
+Joanne Brown, 12000, 2, 11

@@ -1,0 +1,29 @@
+package shooter;
+
+import javax.swing.ImageIcon;
+import java.awt.Graphics;
+import java.util.Random;
+
+public class PowerUp
+{
+	Random RNGesus = new Random();
+	private Player player;
+	private int type;
+	private int x;
+	private int y;
+	private int speed;
+	private ImageIcon[] sprites = {
+			new ImageIcon("images/powerup1.png")};
+	
+	public PowerUp(Player p)
+	{
+		player = p;
+		setType();
+	}
+	
+	public void setType()
+	{
+		int t = RNGesus.nextInt(100);
+		
+	}
+}

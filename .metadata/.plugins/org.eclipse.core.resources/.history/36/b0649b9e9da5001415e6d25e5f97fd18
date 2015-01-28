@@ -1,0 +1,23 @@
+package consoleBlackjack;
+
+import java.util.Scanner;
+
+public class Blackjack
+{	
+	Deck deck;
+	Hand playerHand;
+	Hand houseHand;
+	
+	public Blackjack()
+	{
+		deck = new Deck();
+		playerHand = new Hand();
+		houseHand = new Hand();
+		
+		for(int i = 0; i < 2; i++)
+		{
+			playerHand.addCard(deck.drawCard());
+			houseHand.addCard(deck.drawCard());
+		}
+	}
+}
