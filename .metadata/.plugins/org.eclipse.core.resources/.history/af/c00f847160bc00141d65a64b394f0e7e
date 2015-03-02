@@ -1,0 +1,105 @@
+package poker;
+
+import poker.Card.Suit;
+
+@SuppressWarnings("unused")
+public class Hands
+{
+	private static boolean royalFlush(final Hand h)
+	{
+		boolean ret = true;
+		if(h.lowest() == 10)
+			ret = (straight(h) && flush(h));
+		
+		return ret;
+	}
+	
+	private static boolean straightFlush(final Hand h)
+	{
+		boolean ret = false;
+		ret = (straight(h) && flush(h));
+		return ret;
+	}
+	
+	private static boolean fourOfAKind(final Hand h)
+	{
+		int val = h.cards.get(0).getValue();
+		int count = 0;
+		
+		for(int i = 1; i < h.cards.size(); i++)
+		{
+			if(h.cards.get(i).getValue() == val)
+				count++;
+		}
+		if(count == 3)
+			return true;
+		
+		else
+		{
+			val = h.cards.get(1).getValue();
+			count = 0;
+			for(int i = 2; i < h.cards.size(); i++)
+			{
+				if(h.cards.get(i).getValue() == val)
+					count++;
+			}
+			if(count == 3)
+				return true;
+		}
+		
+		return false;
+	}
+	
+	private static boolean fullHouse(final Hand h)
+	{
+		boolean ret = false;
+		
+		return ret;
+	}
+	
+	private static boolean flush(final Hand h)
+	{
+		boolean ret = true;
+		Suit s = h.cards.get(0).getSuit();
+		for(Card c : h.cards)
+		{
+			if(c.getSuit() != s)
+				ret = false;
+		}
+		
+		return ret;
+	}
+	
+	private static boolean straight(final Hand h)
+	{
+		boolean ret = true;
+		for(int i = h.lowest(); i < h.lowest()+5; i++)
+		{
+			if(!h.contains(i))
+				ret = false;
+		}
+		
+		return ret;
+	}
+	
+	private static boolean threeOfAKind(final Hand h)
+	{
+		boolean ret = false;
+		
+		return ret;
+	}
+	
+	private static boolean twoPair(final Hand h)
+	{
+		boolean ret = false;
+		
+		return ret;
+	}
+	
+	private static boolean onePair(final Hand h)
+	{
+		boolean ret = false;
+		
+		return ret;
+	}
+}

@@ -1,0 +1,67 @@
+package poker;
+
+public class Hands
+{
+	private static boolean royalFlush()
+	{
+		boolean ret = false;
+		
+		return ret;
+	}
+	
+	private static boolean straightFlush()
+	{
+		boolean ret = false;
+		
+		return ret;
+	}
+	
+	private static boolean fourOfAKind()
+	{
+		boolean ret = false;
+		
+		return ret;
+	}
+	
+	private static boolean fullHouse()
+	{
+		boolean ret = false;
+		
+		return ret;
+	}
+	
+	private static boolean flush()
+	{
+		boolean ret = false;
+		
+		return ret;
+	}
+	
+	private static boolean straight()
+	{
+		boolean ret = false;
+		
+		return ret;
+	}
+	
+	private static boolean threeOfAKind()
+	{
+		boolean ret = false;
+		
+		return ret;
+	}
+	
+	private static boolean twoPair()
+	{
+		boolean ret = false;
+		
+		return ret;
+	}
+	
+	private static boolean onePair()
+	{
+		boolean ret = false;
+		
+		return ret;
+	}
+}

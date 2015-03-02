@@ -1,0 +1,120 @@
+package poker;
+
+import java.util.ArrayList;
+import java.awt.Color;
+import java.awt.Graphics;
+import javax.swing.ImageIcon;
+
+public class Hand
+{
+	private int score;
+	private int x; //position of first card
+	private int y;
+	private boolean house = false; //house only
+	ArrayList<Card> cards = new ArrayList<Card>();
+	private ImageIcon hidden = new ImageIcon("images/CardBack.png"); //house only
+	
+	
+	public Hand(boolean h) 
+	{
+		house = h;
+	}
+	
+	public void addCard(Card c)
+	{
+		cards.add(c);
+	}
+	
+	public void swap(Deck d)
+	{
+		for(int i = 0; i < cards.size(); i++)
+		{
+			if(cards.get(i).isSelected())
+			{
+				cards.remove(cards.get(i));
+				addCard(d.drawCard());
+			}
+		}
+	}
+	
+	public void paintComponent(Graphics g)
+	{
+		g.setColor(Color.green);
+		g.fillRect(0, 0, 800, 300);
+	}
+	
+	public void paint(Graphics g, boolean house) //house-player specific
+	{
+		if(house)
+		{
+			for(int i = 0; i < handSize(); i++)
+			{
+				hidden.paintIcon(cards.get(0).getPoker(), g, x+(i*115), y);
+			}
+		}
+		else
+		{
+			for(int i = 0; i < handSize(); i++)
+			{
+				cards.get(i).paint(g, x+(i*115), y);	
+			}
+		}
+		
+	}
+	
+	public int getScore()
+	{
+		return score;
+	}
+	
+	public int handSize()
+	{
+		return cards.size();
+	}
+	
+	public boolean contains(int i)
+	{
+		for(Card c : cards)
+		{
+			if(c.getValue() == i)
+				return true;
+		}
+		
+		return false;
+	}
+	
+	public int lowest()
+	{
+		int ret = 15;
+		for(Card c : cards)
+		{
+			if(c.getValue() < ret)
+				ret = c.getValue();
+		}
+		
+		return ret;
+	}
+	
+	public int highest()
+	{
+		int ret = 0;
+		for(Card c : cards)
+		{
+			if(c.getValue() > ret)
+				ret = c.getValue();
+		}
+		
+		return ret;
+	}	
+	
+	public void setPosition(int xPos, int yPos)
+	{
+		x = xPos;
+		y = yPos;
+	}
+	
+	public void select(int card)
+	{
+		cards.get(card).select();
+	}
+}

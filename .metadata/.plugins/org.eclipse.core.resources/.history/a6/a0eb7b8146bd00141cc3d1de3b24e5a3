@@ -1,0 +1,101 @@
+package poker;
+
+public class HandTester
+{
+	public static void main(String[] args)
+	{
+		Hand royalFlush = new Hand(false);
+		{
+			royalFlush.addCard(new Card(38));
+			royalFlush.addCard(new Card(37));
+			royalFlush.addCard(new Card(36));
+			royalFlush.addCard(new Card(35));
+			royalFlush.addCard(new Card(26));
+			System.out.println("Royal Flush: " + Hands.royalFlush(royalFlush));
+		}
+		Hand straightFlush = new Hand(false);
+		{
+			straightFlush.addCard(new Card(40));
+			straightFlush.addCard(new Card(41));
+			straightFlush.addCard(new Card(42));
+			straightFlush.addCard(new Card(43));
+			straightFlush.addCard(new Card(44));
+			System.out.println("Straight Flush: " + Hands.straightFlush(straightFlush));
+		}
+		Hand fourOAK = new Hand(false);
+		{
+			fourOAK.addCard(new Card(1));
+			fourOAK.addCard(new Card(14));
+			fourOAK.addCard(new Card(27));
+			fourOAK.addCard(new Card(40));
+			fourOAK.addCard(new Card(5));
+			System.out.println("4 Of a kind: " + Hands.fourOfAKind(fourOAK));
+		}
+		Hand fullHouse = new Hand(false);
+		{
+			fullHouse.addCard(new Card(0));
+			fullHouse.addCard(new Card(13));
+			fullHouse.addCard(new Card(26));
+			fullHouse.addCard(new Card(3));
+			fullHouse.addCard(new Card(29));
+			System.out.println("Full house: " + Hands.fullHouse(fullHouse));
+		}
+		Hand flush = new Hand(false);
+		{
+			flush.addCard(new Card(1));
+			flush.addCard(new Card(3));
+			flush.addCard(new Card(5));
+			flush.addCard(new Card(8));
+			flush.addCard(new Card(2));
+			System.out.println("Flush: " + Hands.flush(flush));
+		}
+		Hand straight = new Hand(false);
+		{
+			straight.addCard(new Card(2));
+			straight.addCard(new Card(16));
+			straight.addCard(new Card(4));
+			straight.addCard(new Card(18));
+			straight.addCard(new Card(6));
+			System.out.println("Straight: " + Hands.straight(straight));
+		}
+		Hand threeOAK = new Hand(false);
+		{
+			threeOAK.addCard(new Card(0));
+			threeOAK.addCard(new Card(13));
+			threeOAK.addCard(new Card(26));
+			threeOAK.addCard(new Card(2));
+			threeOAK.addCard(new Card(8));
+			System.out.println("Three of a kind: " + Hands.threeOfAKind(threeOAK));
+		}
+		Hand twoPair = new Hand(false);
+		{
+			twoPair.addCard(new Card(1));
+			twoPair.addCard(new Card(14));
+			twoPair.addCard(new Card(5));
+			twoPair.addCard(new Card(18));
+			twoPair.addCard(new Card(7));
+			System.out.println("2 Pair: " + Hands.twoPair(twoPair));
+		}
+		Hand onePair = new Hand(false);
+		{
+			onePair.addCard(new Card(26));
+			onePair.addCard(new Card(17));
+			onePair.addCard(new Card(30));
+			onePair.addCard(new Card(11));
+			onePair.addCard(new Card(9));
+			System.out.println("1 pair: " + Hands.onePair(onePair));
+		}
+		Hand nothing = new Hand(false);
+		{
+			nothing.addCard(new Card(1));
+			nothing.addCard(new Card(6));
+			nothing.addCard(new Card(18));
+			nothing.addCard(new Card(30));
+			nothing.addCard(new Card(29));
+			boolean bool = (Hands.onePair(nothing) || Hands.twoPair(nothing) || Hands.threeOfAKind(nothing) ||
+					Hands.straight(nothing) || Hands.flush(nothing) || Hands.fullHouse(nothing) || 
+					Hands.fourOfAKind(nothing) || Hands.straightFlush(nothing) || Hands.royalFlush(nothing));
+			System.out.println("Nothing: " + bool);
+		}
+	}
+}

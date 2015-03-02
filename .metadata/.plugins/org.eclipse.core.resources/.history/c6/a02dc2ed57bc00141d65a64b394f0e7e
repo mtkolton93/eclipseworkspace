@@ -1,0 +1,8 @@
+package poker;
+
+import javax.swing.JPanel;
+
+public class Poker extends JPanel
+{
+
+}

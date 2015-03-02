@@ -1,0 +1,81 @@
+package poker;
+
+import poker.Card.Suit;
+
+public class Hands
+{
+	private static boolean royalFlush(final Hand h)
+	{
+		boolean ret = true;
+		
+		
+		return ret;
+	}
+	
+	private static boolean straightFlush(final Hand h)
+	{
+		boolean ret = false;
+		ret = (straight(h) && flush(h));
+		return ret;
+	}
+	
+	private static boolean fourOfAKind(final Hand h)
+	{
+		boolean ret = false;
+		
+		return ret;
+	}
+	
+	private static boolean fullHouse(final Hand h)
+	{
+		boolean ret = false;
+		
+		return ret;
+	}
+	
+	private static boolean flush(final Hand h)
+	{
+		boolean ret = true;
+		Suit s = h.cards.get(0).getSuit();
+		for(Card c : h.cards)
+		{
+			if(c.getSuit() != s)
+				ret = false;
+		}
+		
+		return ret;
+	}
+	
+	private static boolean straight(final Hand h)
+	{
+		boolean ret = true;
+		for(int i = h.lowest(); i < h.lowest()+5; i++)
+		{
+			if(!h.contains(i))
+				ret = false;
+		}
+		
+		return ret;
+	}
+	
+	private static boolean threeOfAKind(final Hand h)
+	{
+		boolean ret = false;
+		
+		return ret;
+	}
+	
+	private static boolean twoPair(final Hand h)
+	{
+		boolean ret = false;
+		
+		return ret;
+	}
+	
+	private static boolean onePair(final Hand h)
+	{
+		boolean ret = false;
+		
+		return ret;
+	}
+}

@@ -1,0 +1,117 @@
+package poker;
+
+import javax.swing.JFrame;
+import javax.swing.UIManager;
+
+public class pokerMain
+{
+	public static void main(String[] args)
+	{
+		try
+		{
+			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+		}
+		catch (Exception e)
+		{
+			e.printStackTrace();
+		}
+		JFrame frame = new JFrame();
+		frame.setSize(816, 636);
+		frame.add(new Poker());
+		frame.setVisible(true);
+		
+		Hand royalFlush = new Hand();
+		{
+			royalFlush.addCard(new Card(51));
+			royalFlush.addCard(new Card(50));
+			royalFlush.addCard(new Card(49));
+			royalFlush.addCard(new Card(48));
+			royalFlush.addCard(new Card(39));
+			System.out.println("Royal Flush: " + Hands.royalFlush(royalFlush));
+		}
+		Hand straightFlush = new Hand();
+		{
+			straightFlush.addCard(new Card(40));
+			straightFlush.addCard(new Card(41));
+			straightFlush.addCard(new Card(42));
+			straightFlush.addCard(new Card(43));
+			straightFlush.addCard(new Card(44));
+			System.out.println("Straight Flush: " + Hands.straightFlush(straightFlush));
+		}
+		Hand fourOAK = new Hand();
+		{
+			fourOAK.addCard(new Card(1));
+			fourOAK.addCard(new Card(14));
+			fourOAK.addCard(new Card(27));
+			fourOAK.addCard(new Card(40));
+			fourOAK.addCard(new Card(5));
+			System.out.println("4 Of a kind: " + Hands.fourOfAKind(fourOAK));
+		}
+		Hand fullHouse = new Hand();
+		{
+			fullHouse.addCard(new Card(0));
+			fullHouse.addCard(new Card(13));
+			fullHouse.addCard(new Card(26));
+			fullHouse.addCard(new Card(3));
+			fullHouse.addCard(new Card(29));
+			System.out.println("Full house: " + Hands.fullHouse(fullHouse));
+		}
+		Hand flush = new Hand();
+		{
+			flush.addCard(new Card(1));
+			flush.addCard(new Card(3));
+			flush.addCard(new Card(5));
+			flush.addCard(new Card(8));
+			flush.addCard(new Card(2));
+			System.out.println("Flush: " + Hands.flush(flush));
+		}
+		Hand straight = new Hand();
+		{
+			straight.addCard(new Card(2));
+			straight.addCard(new Card(16));
+			straight.addCard(new Card(4));
+			straight.addCard(new Card(18));
+			straight.addCard(new Card(6));
+			System.out.println("Straight: " + Hands.straight(straight));
+		}
+		Hand threeOAK = new Hand();
+		{
+			threeOAK.addCard(new Card());
+			threeOAK.addCard(new Card());
+			threeOAK.addCard(new Card());
+			threeOAK.addCard(new Card());
+			threeOAK.addCard(new Card());
+			System.out.println("Three of a kind: " + Hands.threeOfAKind(threeOAK));
+		}
+		Hand twoPair = new Hand();
+		{
+			twoPair.addCard(new Card());
+			twoPair.addCard(new Card());
+			twoPair.addCard(new Card());
+			twoPair.addCard(new Card());
+			twoPair.addCard(new Card());
+			System.out.println("2 Pair: " + Hands.twoPair(twoPair));
+		}
+		Hand onePair = new Hand();
+		{
+			onePair.addCard(new Card());
+			onePair.addCard(new Card());
+			onePair.addCard(new Card());
+			onePair.addCard(new Card());
+			onePair.addCard(new Card());
+			System.out.println("1 pair: " + Hands.onePair(onePair));
+		}
+		Hand nothing = new Hand();
+		{
+			nothing.addCard(new Card());
+			nothing.addCard(new Card());
+			nothing.addCard(new Card());
+			nothing.addCard(new Card());
+			nothing.addCard(new Card());
+			boolean bool = (Hands.onePair(nothing) || Hands.twoPair(nothing) || Hands.threeOfAKind(nothing) ||
+					Hands.straight(nothing) || Hands.flush(nothing) || Hands.fullHouse(nothing) || Hands.fourOfAKind(nothing) ||
+					Hands.straightFlush(nothing) || Hands.royalFlush(nothing));
+			System.out.println("Nothing: " + !bool);
+		}
+	}
+}

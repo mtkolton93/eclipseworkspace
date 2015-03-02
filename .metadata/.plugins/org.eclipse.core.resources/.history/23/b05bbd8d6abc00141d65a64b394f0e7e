@@ -1,0 +1,12 @@
+package poker;
+
+public class HandTester
+{
+
+	public static void main(String[] args)
+	{
+		// TODO Auto-generated method stub
+
+	}
+
+}

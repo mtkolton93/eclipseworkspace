@@ -1,0 +1,30 @@
+package poker;
+
+import java.awt.Graphics;
+import javax.swing.ImageIcon;
+
+public class House extends Hand
+{
+	private ImageIcon hidden = new ImageIcon("images/CardBack.png");
+	
+	public void paint(Graphics g, Boolean reveal)
+	{
+		if(reveal)
+		{
+			for(int i = 0; i < handSize(); i++)
+			{
+				cards.get(i).paint(g, x+(i*115), y);	
+			}
+		}
+		else
+		{
+			for(int i = 0; i < handSize(); i++)
+				hidden.paintIcon(cards.get(0).getPoker(), g, x+(i*115), y);
+		}
+	}
+	
+	public void reveal()
+	{
+		
+	}
+}

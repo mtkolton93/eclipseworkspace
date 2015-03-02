@@ -1,0 +1,15 @@
+package poker;
+
+import java.awt.Graphics;
+
+public class Player extends Hand
+{
+	@Override
+	public void paint(Graphics g)
+	{
+		for(int i = 0; i < handSize(); i++)
+		{
+			cards.get(i).paint(g, x+(i*115), y);	
+		}
+	}
+}

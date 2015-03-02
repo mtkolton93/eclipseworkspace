@@ -1,0 +1,257 @@
+package poker;
+
+import java.awt.Color;
+import java.awt.Graphics;
+import java.awt.Font;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.util.ArrayList;
+import javax.swing.ImageIcon;
+import javax.swing.JButton;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JTextField;
+
+@SuppressWarnings("serial")
+public class Poker extends JPanel implements ActionListener
+{
+	private enum State { BET, SWAP, SCORE, BROKE }
+	private State state;
+	private Deck deck = new Deck();
+	private Player player;
+	private House house;
+	private Hand winner;
+	private ImageIcon background = new ImageIcon("images/background.png");
+	private JButton[] cards;
+	private JButton enter;
+	private JTextField betAmt;
+	private ArrayList<Card> discards = new ArrayList<Card>();
+	
+	public Poker()
+	{
+		setLayout(null);
+		deck.addGraphics(this);
+		initButtons();
+		newGame();
+	}
+	
+	public void paintComponent(Graphics g)
+	{
+		background.paintIcon(this, g, 0, 0);
+		player.paint(g);
+		house.paint(g);
+		
+		g.setFont(new Font("garamond", Font.BOLD, 36));
+		g.drawString("Bet:", 595, 380);
+		g.drawString("Money: $" + player.getMoney(), 585, 320);
+		
+		if(state == State.SCORE)
+		{
+			if(winner == player)
+				g.drawString("Player Wins!", 60, 400);
+			if(winner == house)
+				g.drawString("House Wins!", 60, 200);
+		}
+		if(state == State.BROKE)
+		{
+			g.setColor(new Color(255, 255, 255, 200));
+			g.fillRect(0, 0, 800, 600);
+		}
+	}
+	
+	public void discard(Card c)
+	{
+		discards.add(c);
+		if(deck.size() == 0)
+			deck.replace(discards);
+		
+	}
+	
+	private void deal()
+	{
+		if(house.handSize() == 0)
+		{
+			for(int i = 0; i < 5; i++)
+			{
+				house.addCard(deck.drawCard());
+				player.addCard(deck.drawCard());
+			}
+		}
+		else
+		{
+			for(int i = 0; i < 5; i++)
+			{
+				house.swapAll(deck);
+				player.swapAll(deck);
+			}
+		}
+		house.setScore(0);
+		player.setScore(0);
+	}
+	
+	private void newGame()
+	{
+		deck = new Deck();
+		deck.addGraphics(this);
+		player = new Player();
+		house = new House();
+		house.setPosition(20, 20);
+		player.setPosition(20,420);
+		deal();
+		changeState(State.BET);
+	}
+	
+	private void changeState(State s)
+	{
+		state = s;
+		if(state == State.BET)
+		{
+			enter.setText("Place Bet");
+			for(JButton b : cards)
+			{
+				b.setVisible(false);
+			}
+			betAmt.setVisible(true);
+			
+		}
+		if(state == State.SWAP)
+		{
+			enter.setText("Swap Cards");
+			for(JButton b : cards)
+			{
+				b.setVisible(true);
+			}
+		}
+		if(state == State.SCORE)
+		{
+			if(winner == player)
+				player.payOut();
+			else if(player.getMoney() <= 0)
+				state = State.BROKE;
+			
+			enter.setText("Deal");
+			for(JButton b : cards)
+			{
+				b.setVisible(false);
+			}
+		}
+		if(state == State.BROKE)
+		{
+			enter.setText("New Game");
+		}
+	}
+	
+	private void initButtons()
+	{
+		cards = new JButton[5];
+		enter = new JButton("Enter");
+		betAmt = new JTextField("50");
+		for(int i = 0; i < 5; i++)
+		{
+			cards[i] = new JButton();
+			cards[i].setSize(98, 20);
+			cards[i].setLocation(20+(i*115), 570);
+			cards[i].addActionListener(this);
+			add(cards[i]);
+			cards[i].setVisible(false);
+		}
+		enter.setSize(170, 170);
+		enter.setLocation(595, 420);
+		enter.addActionListener(this);
+		add(enter);
+		betAmt.setLocation(665, 356);
+		betAmt.setSize(100, 25);
+		add(betAmt);
+		betAmt.setVisible(false);
+	}
+	
+	private void chooseWinner()
+	{
+		Hands.royalFlush(house);
+		Hands.straightFlush(house);
+		Hands.fourOfAKind(house);
+		Hands.fullHouse(house);
+		Hands.flush(house);
+		Hands.straight(house);
+		Hands.threeOfAKind(house);
+		Hands.twoPair(house);
+		Hands.onePair(house);
+		Hands.royalFlush(player);
+		Hands.straightFlush(player);
+		Hands.fourOfAKind(player);
+		Hands.fullHouse(player);
+		Hands.flush(player);
+		Hands.straight(player);
+		Hands.threeOfAKind(player);
+		Hands.twoPair(player);
+		Hands.onePair(player);
+		
+		if(player.getScore() > house.getScore())
+			winner = player;
+		else
+			winner = house;
+		
+		changeState(State.SCORE);
+		house.reveal();
+	}
+
+	@Override
+	public void actionPerformed(ActionEvent arg0)
+	{
+		for(int i = 0; i < 5; i++)
+		{
+			if(arg0.getSource() == cards[i])
+				player.select(i);
+		}
+		if(arg0.getSource() == enter)
+		{
+			if(state == State.BET)
+			{
+				try
+				{
+					int bet = Integer.parseInt(betAmt.getText());
+					if(bet > player.getMoney())
+					{
+						bet = player.getMoney();
+						betAmt.setText(Integer.toString(bet));
+					}
+					player.placeBet(bet);
+				}
+				catch(Exception e)
+				{
+					betAmt.setText("50");
+					player.placeBet(50);
+				}
+				changeState(State.SWAP);
+			}
+			else if(state == State.SWAP)
+			{
+				player.swap(deck);
+				house.analyze();
+				house.swap(deck);
+//				System.out.println();
+//				System.out.println("~~~~~~~~~~NEW HAND~~~~~~~~~~");
+//				System.out.println("Royal Flush: " + Hands.royalFlush(player));
+//				System.out.println("Straight Flush: " + Hands.straightFlush(player));
+//				System.out.println("4 Of a kind: " + Hands.fourOfAKind(player));
+//				System.out.println("Full house: " + Hands.fullHouse(player));
+//				System.out.println("Flush: " + Hands.flush(player));
+//				System.out.println("Straight: " + Hands.straight(player));
+//				System.out.println("Three of a kind: " + Hands.threeOfAKind(player));
+//				System.out.println("2 Pair: " + Hands.twoPair(player));
+//				System.out.println("1 pair: " + Hands.onePair(player));
+//				System.out.println("Score: " + player.getScore());
+				chooseWinner();
+			}
+			else if(state == State.SCORE)
+			{
+				deal();
+				changeState(State.BET);
+			}
+			else if(state == State.BROKE)
+				newGame();
+
+		}
+		repaint();
+	}
+}

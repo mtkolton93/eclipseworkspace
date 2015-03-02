@@ -1,0 +1,13 @@
+package poker;
+
+import javax.swing.JFrame;
+import javax.swing.JPanel;
+
+public class pokerMain extends JPanel
+{
+	public static void main(String[] args)
+	{
+		JFrame frame = new JFrame();
+		frame.setSize(816, 636);
+	}
+}

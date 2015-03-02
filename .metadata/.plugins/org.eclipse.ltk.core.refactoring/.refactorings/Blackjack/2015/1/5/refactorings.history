@@ -1,4 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<session version="1.0">
-<refactoring comment="Rename method &apos;consoleBlackjack.Hand.updateScore()&apos; to &apos;updateAces&apos;&#x0D;&#x0A;- Original project: &apos;Blackjack&apos;&#x0D;&#x0A;- Original element: &apos;consoleBlackjack.Hand.updateScore()&apos;&#x0D;&#x0A;- Renamed element: &apos;consoleBlackjack.Hand.updateAces()&apos;&#x0D;&#x0A;- Update references to refactored element" delegate="false" deprecate="false" description="Rename method &apos;updateScore&apos;" flags="589830" id="org.eclipse.jdt.ui.rename.method" input="/src&lt;consoleBlackjack{Hand.java[Hand~updateScore" name="updateAces" references="true" stamp="1422307738387" version="1.0"/>
-</session>
