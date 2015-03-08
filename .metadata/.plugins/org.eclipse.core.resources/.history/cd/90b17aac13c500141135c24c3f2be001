@@ -1,0 +1,253 @@
+
+
+import java.util.ArrayList;
+import java.util.Collections;
+import poker.Card.Suit;
+
+public class Hands
+{
+	public static boolean royalFlush(final Hand h)
+	{
+		if(h.lowest() == 10)
+		{
+			if((straight(h) && flush(h)))
+			{
+				h.setScore(130);
+				return true;
+			}
+		}
+		
+		return false;
+	}
+	
+	public static boolean straightFlush(final Hand h)
+	{
+		if(straight(h) && flush(h))
+		{
+			h.setScore(h.highest()+112);
+			return true;
+		}
+		return false;
+	}
+	
+	public static boolean fourOfAKind(final Hand h)
+	{
+		int val = h.cards.get(0).getValue();
+		int count = 0;
+		
+		//Check if last 4 have 3 matches with first card
+		for(int i = 1; i < h.cards.size(); i++)
+		{
+			if(h.cards.get(i).getValue() == val)
+				count++;
+		}
+		if(count == 3)
+		{
+			h.setScore(val+98);
+			return true;
+		}
+		//Check if last 3 all match the second card
+		else
+		{
+			val = h.cards.get(1).getValue();
+			count = 0;
+			for(int i = 2; i < h.cards.size(); i++)
+			{
+				if(h.cards.get(i).getValue() == val)
+					count++;
+			}
+			if(count == 3)
+			{
+				h.setScore(val+98);
+				return true;
+			}
+		}
+		
+		return false;
+	}
+	
+	public static boolean fullHouse(final Hand h)
+	{
+		boolean ret = false;
+		ArrayList<Integer> values = sortValues(h);
+		
+		//first two are equal(always with sorted full house)
+		if(values.get(0) == values.get(1))
+		{
+			//first 3 are equal
+			if(values.get(1) == values.get(2))
+			{
+				//last 2 are equal
+				if(values.get(3) == values.get(4))
+					ret = true;
+			}
+			//last 3 are equal
+			else if(values.get(3) == values.get(4))
+				ret = true;
+		}
+		
+		if(ret)
+		{
+			if(values.get(0) > values.get(4))
+				h.setScore(values.get(0)+84);
+			else
+				h.setScore(values.get(4)+84);
+		}
+		return ret;
+	}
+	
+	public static boolean flush(final Hand h)
+	{
+		Suit s = h.cards.get(0).getSuit();
+		for(Card c : h.cards)
+		{
+			if(c.getSuit() != s)
+				return false;
+		}
+		
+		h.setScore(h.highest()+70);
+		return true;
+	}
+	
+	public static boolean straight(final Hand h)
+	{
+		boolean ret = true;
+		for(int i = h.lowest(); i < h.lowest()+5; i++)
+		{
+			if(!h.contains(i))
+				ret = false;
+		}
+		//A-5 straight (only time Ace is low)
+		if(!ret)
+		{
+			if(h.contains(14) && h.contains(2) && h.contains(3) && h.contains(4) && h.contains(5))
+				ret = true;
+		}
+		
+		if(ret)
+			h.setScore(h.highest()+56);
+		return ret;
+	}
+	
+	public static boolean threeOfAKind(final Hand h)
+	{
+		int pairValue = 0;
+		boolean ret = false;
+		ArrayList<Integer> values = sortValues(h);
+		
+		//first three match, other two don't
+		if(values.get(0) == values.get(2) && values.get(3) != values.get(4))
+		{
+			//last two don't match the three
+			if(values.get(0) != values.get(3) && values.get(3) != values.get(4))
+			{
+				ret =  true;
+				pairValue = values.get(0);
+			}
+		}
+		//mid three match
+		else if(values.get(1) == values.get(3) && values.get(0) != values.get(4))
+		{
+			//first and last don't match the three
+			if(values.get(0) != values.get(1) && values.get(0) != values.get(4))
+			{
+				ret =  true;
+				pairValue = values.get(1);
+			}
+		}
+		//last three match
+		else if(values.get(2) == values.get(4) && values.get(0) != values.get(1))
+		{
+			//first two don't match the three
+			if(values.get(0) != values.get(2) && values.get(1) != values.get(2))
+			{
+				ret =  true;
+				pairValue = values.get(2);
+			}
+		}
+		
+		if(ret)
+			h.setScore(pairValue+42);
+		return ret;
+	}
+	
+	public static boolean twoPair(final Hand h)
+	{
+		boolean ret = false;
+		ArrayList<Integer> values = sortValues(h);
+		int pairValue = 0;
+		
+		//last is odd card
+		if(values.get(0) == values.get(1) && values.get(2) == values.get(3))
+		{
+			if(values.get(4) != values.get(0) && values.get(4) != values.get(2) && values.get(0) != values.get(2))
+			{
+				if(values.get(0) > values.get(2))
+					pairValue = values.get(0);
+				else
+					pairValue = values.get(2);
+				ret = true;
+			}
+		}
+		//middle is odd card
+		if(values.get(0) == values.get(1) && values.get(3) == values.get(4))
+		{
+			if(values.get(2) != values.get(0) && values.get(2) != values.get(3) && values.get(0) != values.get(3))
+			{
+				if(values.get(0) > values.get(3))
+					pairValue = values.get(0);
+				else
+					pairValue = values.get(3);
+				ret = true;
+			}
+		}
+		//first is odd card
+		if(values.get(1) == values.get(2) && values.get(3) == values.get(4))
+		{
+			if(values.get(0) != values.get(1) && values.get(0) != values.get(3) && values.get(1) != values.get(3))
+			{
+				if(values.get(1) > values.get(3))
+					pairValue = values.get(1);
+				else
+					pairValue = values.get(3);
+				ret = true;
+			}
+		}
+		
+		if(ret)
+			h.setScore(pairValue+28);
+		return ret;
+	}
+	
+	public static boolean onePair(final Hand h)
+	{
+		int pairValue = 0;
+		ArrayList<Integer> values = sortValues(h);
+		if(twoPair(h) || threeOfAKind(h) || fourOfAKind(h) || fullHouse(h))
+			return false;
+		
+		for(int i = 0; i < values.size()-1; i++)
+		{
+			if(values.get(i) == values.get(i+1))
+			{
+				pairValue = values.get(i);
+				h.setScore(pairValue+14);
+				return true;
+			}
+		}
+		
+		if(h.getScore() == 0)
+			h.setScore(h.highest());
+		return false;
+	}
+	
+	private static ArrayList<Integer> sortValues(Hand h)
+	{
+		ArrayList<Integer> ret = new ArrayList<Integer>();
+		for(Card c : h.cards)
+			ret.add(c.getValue());
+		
+		Collections.sort(ret);
+		return ret;
+	}
+}

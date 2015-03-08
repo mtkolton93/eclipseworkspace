@@ -1,0 +1,10 @@
+package poker;
+
+import javax.swing.JPanel;
+
+@SuppressWarnings("serial")
+public class Poker extends JPanel
+{
+	public Poker()
+	{}
+}
